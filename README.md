@@ -58,6 +58,7 @@ PHPWord requires the following:
 - [XMLWriter extension](http://php.net/manual/en/book.xmlwriter.php) (optional, used to write DOCX and ODT)
 - [XSL extension](http://php.net/manual/en/book.xsl.php) (optional, used to apply XSL style sheet to template )
 - [dompdf](https://github.com/dompdf/dompdf) (optional, used to write PDF)
+- [twig](https://github.com/twigphp/Twig) (optional, used to handle twig features)
 
 ## Installation
 

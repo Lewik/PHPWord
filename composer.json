@@ -51,7 +51,8 @@
         "ext-gd2": "Used to add images",
         "ext-xmlwriter": "Used to write DOCX and ODT",
         "ext-xsl": "Used to apply XSL style sheet to main document part of OOXML template",
-        "dompdf/dompdf": "Used to write PDF"
+        "dompdf/dompdf": "Used to write PDF",
+        "twig/twig": "Used to handle twig features"
     },
     "autoload": {
         "psr-4": {

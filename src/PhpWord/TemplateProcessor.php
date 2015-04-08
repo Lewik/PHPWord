@@ -146,6 +146,29 @@ class TemplateProcessor
     }
 
     /**
+     * handle file like twig template
+     *
+     * @param array $vars
+     */
+    public function handleTwig(array $vars = array())
+    {
+        require_once '/srv/http/gpo/vendor/twig/twig/lib/Twig/Autoloader.php';
+        \Twig_Autoloader::register();
+
+        $twig = new \Twig_Environment(new \Twig_Loader_String());
+
+        foreach ($this->temporaryDocumentHeaders as $index => $headerXML) {
+            $this->temporaryDocumentHeaders[$index] = $twig->render($this->temporaryDocumentHeaders[$index], $vars);
+        }
+
+        $this->temporaryDocumentMainPart = $twig->render($this->temporaryDocumentMainPart, $vars);
+
+        foreach ($this->temporaryDocumentFooters as $index => $headerXML) {
+            $this->temporaryDocumentFooters[$index] = $twig->render($this->temporaryDocumentFooters[$index], $vars);
+        }
+    }
+
+    /**
      * Returns array of all variables in template.
      *
      * @return string[]
