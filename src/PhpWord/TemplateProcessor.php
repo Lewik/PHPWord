@@ -149,23 +149,46 @@ class TemplateProcessor
      * handle file like twig template
      *
      * @param array $vars
+     * @param \Twig_Environment $twig
      */
-    public function handleTwig(array $vars = array())
+    public function handleTwig(array $vars = array(), \Twig_Environment $twig)
     {
-        require_once '/srv/http/gpo/vendor/twig/twig/lib/Twig/Autoloader.php';
-        \Twig_Autoloader::register();
-
-        $twig = new \Twig_Environment(new \Twig_Loader_String());
-
         foreach ($this->temporaryDocumentHeaders as $index => $headerXML) {
-            $this->temporaryDocumentHeaders[$index] = $twig->render($this->temporaryDocumentHeaders[$index], $vars);
+            $this->temporaryDocumentHeaders[$index] = $twig->render(
+                $this->prepareForTwig($this->temporaryDocumentHeaders[$index]),
+                $vars
+            );
         }
 
-        $this->temporaryDocumentMainPart = $twig->render($this->temporaryDocumentMainPart, $vars);
+        $this->temporaryDocumentMainPart = $twig->render(
+            $this->prepareForTwig($this->temporaryDocumentMainPart),
+            $vars
+        );
 
         foreach ($this->temporaryDocumentFooters as $index => $headerXML) {
-            $this->temporaryDocumentFooters[$index] = $twig->render($this->temporaryDocumentFooters[$index], $vars);
+            $this->temporaryDocumentFooters[$index] = $twig->render(
+                $this->prepareForTwig($this->temporaryDocumentHeaders[$index]),
+                $vars
+            );
         }
+    }
+
+    /**
+     * remove escaped characters
+     *
+     * @param $string
+     * @return mixed
+     */
+    protected function prepareForTwig($string)
+    {
+        //TODO : optimisations required =)
+        $string = preg_replace_callback('|({{.*}})|msU',function ($match){
+            $replacements = array(
+                '&apos;' => '\''
+            );
+            return str_replace(array_keys($replacements), array_values($replacements), $match[0]);
+        },$string);
+        return $string;
     }
 
     /**
