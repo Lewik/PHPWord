@@ -174,19 +174,27 @@ class TemplateProcessor
     }
 
     /**
-     * remove escaped characters
+     * Remove escaped characters
      *
      * @param $string
      * @return mixed
      */
     protected function prepareForTwig($string)
     {
+        /**
+         * Why strip_tags work:
+         * Example of word xml: <w>{{ tag|param </w><w>}}</w>
+         * So w-containers breaks when we deleting tags, but first <w> and last </w> will match.
+         * Even it was different style.
+         * Even with {% for %} and {% if %}
+         * We tested it on docx
+         */
         //TODO : optimisations required =)
-        $string = preg_replace_callback('|({{.*}})|msU',function ($match){
-            $replacements = array(
-                '&apos;' => '\''
-            );
-            return str_replace(array_keys($replacements), array_values($replacements), $match[0]);
+        $string = preg_replace_callback('|({[{%].*[%}]})|msU',function ($match){
+            $replacements = array('&apos;' => '\'');
+            $tagString = str_replace(array_keys($replacements), array_values($replacements), $match[0]);
+            $tagString = strip_tags($tagString);
+            return $tagString;
         },$string);
         return $string;
     }
